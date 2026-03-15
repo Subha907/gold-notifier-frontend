@@ -1,0 +1,13 @@
+{
+  "name": "Gold Price Notifier",
+  "short_name": "GoldPrice",
+  "description": "Daily 24K Gold Price Updates for Kolkata",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#030712",
+  "theme_color": "#facc15",
+  "icons": [
+    { "src": "/gold-icon.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "/gold-icon.png", "sizes": "512x512", "type": "image/png" }
+  ]
+}
