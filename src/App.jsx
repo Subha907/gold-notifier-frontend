@@ -8,11 +8,22 @@ export default function App() {
   const [prices, setPrices] = useState([]);
   const [loading, setLoading] = useState(true);
   const [lastUpdated, setLastUpdated] = useState("");
+  const [pendingAlerts, setPendingAlerts] = useState([]);
 
   useEffect(() => {
     fetchPrices();
     registerFCM();
+    checkPendingNotifications();
   }, []);
+
+  async function checkPendingNotifications() {
+    try {
+      const { data } = await axios.get(`${API}/api/notifications`);
+      if (data.length > 0) setPendingAlerts(data);
+    } catch (err) {
+      console.warn("Could not fetch pending notifications", err);
+    }
+  }
 
   async function fetchPrices() {
     try {
@@ -72,6 +83,21 @@ export default function App() {
           <p className="text-gray-400 text-sm mt-1">24K Gold — Kolkata Region</p>
           {lastUpdated && <p className="text-gray-500 text-xs mt-1">Last updated: {lastUpdated}</p>}
         </div>
+
+        {/* Pending Notifications Banner */}
+        {pendingAlerts.length > 0 && (
+          <div className="mb-6 space-y-2">
+            {pendingAlerts.map((n, i) => (
+              <div key={i} className="bg-yellow-500/10 border border-yellow-500/40 rounded-xl p-4 flex justify-between items-start">
+                <div>
+                  <p className="text-yellow-400 font-semibold text-sm">{n.title}</p>
+                  <p className="text-gray-300 text-sm mt-1">{n.body}</p>
+                </div>
+                <button onClick={() => setPendingAlerts(pendingAlerts.filter((_, j) => j !== i))} className="text-gray-500 hover:text-white ml-4 text-lg">✕</button>
+              </div>
+            ))}
+          </div>
+        )}
 
         {loading ? (
           <p className="text-center text-gray-400 animate-pulse">Fetching latest prices...</p>
